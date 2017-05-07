@@ -87,7 +87,7 @@ const CGFloat marginValue = 36.0f;
     //添加圆形路径
     //遍历所有的itemView
     [_itemViewsM enumerateObjectsUsingBlock:^(CLLockItemView *itemView, NSUInteger idx, BOOL *stop) {
-
+        
         CGContextAddEllipseInRect(ctx, itemView.frame);
     }];
     
@@ -96,7 +96,7 @@ const CGFloat marginValue = 36.0f;
     
     //新建路径：管理线条
     CGMutablePathRef pathM = CGPathCreateMutable();
-
+    
     //设置上下文属性
     //1.设置线条颜色
     [CoreLockLockLineColor set];
@@ -124,7 +124,7 @@ const CGFloat marginValue = 36.0f;
             CGPathAddLineToPoint(pathM, NULL, directPoint.x, directPoint.y);
         }
     }];
-
+    
     //将路径添加到上下文
     CGContextAddPath(ctx, pathM);
     
@@ -147,7 +147,7 @@ const CGFloat marginValue = 36.0f;
  *  解锁视图准备
  */
 -(void)lockViewPrepare{
-
+    
     for (NSUInteger i=0; i<9; i++) {
         
         CLLockItemView *itemView = [[CLLockItemView alloc] init];
@@ -162,7 +162,7 @@ const CGFloat marginValue = 36.0f;
     [super layoutSubviews];
     
     CGFloat itemViewWH = (self.frame.size.width - 4 * marginValue) /3.0f;
-
+    
     [self.subviews enumerateObjectsUsingBlock:^(UIView *subview, NSUInteger idx, BOOL *stop) {
         
         NSUInteger row = idx % 3;
@@ -192,7 +192,7 @@ const CGFloat marginValue = 36.0f;
     //解锁处理
     [self lockHandle:touches];
     
-
+    
     if(CoreLockTypeSetPwd == _type){ // 设置密码
         //开始
         if(self.firstRightPWD == nil){//第一次输入
@@ -232,7 +232,7 @@ const CGFloat marginValue = 36.0f;
 
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
- 
+    
     //手势结束
     [self gestureEnd];
 }
@@ -243,12 +243,12 @@ const CGFloat marginValue = 36.0f;
  */
 -(void)gestureEnd{
     
-
+    
     //设置密码检查
     if(self.pwdM.length != 0){
         [self setpwdCheck];
     }
-
+    
     
     for (CLLockItemView *itemView in self.itemViewsM) {
         
@@ -266,7 +266,7 @@ const CGFloat marginValue = 36.0f;
     
     //清空密码
     self.pwdM = nil;
-
+    
 }
 
 
@@ -333,7 +333,7 @@ const CGFloat marginValue = 36.0f;
             if(_setPWTwiceSameBlock != nil) _setPWTwiceSameBlock(self.firstRightPWD);
         }
     }
-
+    
 }
 
 
@@ -370,6 +370,8 @@ const CGFloat marginValue = 36.0f;
     //记录密码
     [self.pwdM appendFormat:@"%@",@(itemView.tag)];
     
+    //通知InfoView
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CLLockView" object:nil userInfo:@{@"CLLockView":self.pwdM}];
     
     //计算方向：每添加一次itemView就计算一次
     [self calDirect];
